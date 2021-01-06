@@ -1,7 +1,8 @@
-# Monthly Active User Counts
+# RStudio Active User Counts
 
-The two scripts here will generate counts of monthly active users for RStudio
-Server Pro and RStudio Connect.
+The scripts here generate active user counts for RStudio Server Pro and RStudio
+Connect. These counts can be used to verify annual usage for licensing purposes,
+or to create more granular reports like monthly active users.
 
 ### Dependencies
 #### System
@@ -37,19 +38,20 @@ In order to run the script interactively, start an R session and run through
 each line of the script, adjusting the variables as needed.
 
 #### RStudio Server Pro
-The `mau-rsp.R` script uses the r-sessions log file to determine session counts.
-This log file can be configured following the [instructions in the RStudio
-Server Pro administration
+The `named-users-rsp.R` script uses the r-sessions log file to determine active
+user counts. This log file can be configured following the [instructions in the
+RStudio Server Pro administration
 guide](https://docs.rstudio.com/ide/server-pro/auditing-and-monitoring.html#r-session-auditing).
 The default path for this file is
 `/var/lib/rstudio-server/audit/r-sessions/r-sessions.csv`. The script looks for
 the file in the default path, but this can be changed with the `--log-path`
 parameter. By default, this log file can only be read by the root user,
 therefore **it is recommended to run this script with root privileges on the
-RStudio Server Pro server.**
+RStudio Server Pro server.** Otherwise, you will need to create a copy of the
+log file with appropriate permissions.
 
 ```bash
-$ ./mau-rsp.R -h
+$ ./named-users-rsp.R -h
 usage: mau-rsp.R [--] [--help] [--debug] [--opts OPTS] [--log-path
        LOG-PATH] [--min-date MIN-DATE] [--output OUTPUT]
 
@@ -70,16 +72,16 @@ optional arguments:
 ```
 
 #### RStudio Connect
-The `mau-rsc.R` script uses the `usermanager` cli to generate the log file
-needed to calculate monthly users. In order for the CLI to be used, [RStudio
-Connect must be
+The `named-users-rsc.R` script uses the [`usermanager`
+cli](https://docs.rstudio.com/connect/admin/appendix/cli/#usermanager) to
+generate the log file needed to calculate monthly users. In order for the CLI to
+be used, [RStudio Connect must be
 stopped](https://docs.rstudio.com/connect/admin/server-management/#stopping-starting)
-if you use the SQLite database provider.
-**It is recommended to run this script with root privileges on the RStudio
-Connect server.**
+if you use the SQLite database provider. **It is recommended to run this script
+with root privileges on the RStudio Connect server.**
 
 ```bash
-$ ./mau-rsc.R -h                                                      
+$ ./named-users-rsc.R -h                                                      
 usage: mau-rsc.R [--] [--help] [--debug] [--opts OPTS] [--min-date
        MIN-DATE] [--max-date MAX-DATE] [--output OUTPUT]
 
@@ -100,17 +102,17 @@ optional arguments:
 ```
 
 ### Output
-Each script will print a table of monthly user counts to `stdout`. It will also
+Each script will print a table of user counts to `stdout`. It will also
 write a csv file containing more specific information about individual user
 activity per month.
 
 ### Combine
-The `mau-combine.R` script can be used to combine the CSV output from
-`mau-rsp.R` and `mau-rsc.R`. This can be helpful in order to easily identify
-users who are using both RStudio Server Pro and RStudio Connect.
+The `counts-combine.R` script can be used to combine the CSV output from
+`named-users-rsp.R` and `named-users-rsc.R`. This can be helpful in order to
+easily identify users who are using both RStudio Server Pro and RStudio Connect.
 
 ```bash
-$ ./mau-combine.R -h
+$ ./counts-combine.R -h
 usage: mau-combine.R [--] [--help] [--debug] [--opts OPTS] [--rsp-path
        RSP-PATH] [--rsc-path RSC-PATH] [--output OUTPUT]
 
@@ -134,11 +136,11 @@ input files.
 
 ### Anonymize
 In the event that you want to anonymize users in the output file, the
-`mau-anonymize.R` script can be used to randomly anonymize users by assigning
+`counts-anonymize.R` script can be used to randomly anonymize users by assigning
 them a numeric ID.
 
 ```bash
-$ ./mau-anonymize.R -h
+$ ./counts-anonymize.R -h
 usage: mau-anonymize.R [--] [--help] [--debug] [--opts OPTS]
        [--data-path DATA-PATH] [--output OUTPUT]
 
