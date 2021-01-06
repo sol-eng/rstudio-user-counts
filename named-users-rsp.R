@@ -5,9 +5,13 @@ log_path <- "/var/lib/rstudio-server/audit/r-sessions/r-sessions.csv"
 
 # Set minimum date - default is 1 year ago
 min_date <- as.POSIXct(Sys.Date() - 365)
+max_date <- as.POSIXct(Sys.Date() + 1)
 
 # Set CSV path for MAU data write
 csv_path <- gsub(" ", "-", paste0("./rsp-user-counts-", Sys.time(), ".csv"))
+
+# Set monthly value
+monthly <- TRUE
 
 # Set debug value
 debug <- FALSE
@@ -44,7 +48,7 @@ count_metric <- function(log_data, metric) {
 # Parse arguments if run as CLI
 if (!interactive()) {
   library(argparser, quietly = TRUE)
-  p <- arg_parser("Monthly Active RStudio Server Pro User Counts")
+  p <- arg_parser(description = "Active RStudio Server Pro User Counts")
   p <- add_argument(parser = p, 
                     arg = "--log-path", 
                     help = "Path to RStudio Session logs",
@@ -52,14 +56,23 @@ if (!interactive()) {
                     default = log_path)
   p <- add_argument(parser = p,
                     arg = "--min-date",
-                    help = "Minimum date to compute monthly counts",
+                    help = "Minimum date to compute user counts",
                     type = "character",
-                    default = as.character(min_date))
+                    default = format(min_date, "%Y-%m-%d"))
+  p <- add_argument(parser = p,
+                    arg = "--max-date",
+                    help = "Maximum date to compute user counts",
+                    type = "character",
+                    default = format(max_date, "%Y-%m-%d"))
   p <- add_argument(parser = p,
                     arg = "--output",
                     help = "Path to write .csv file of user counts",
                     type = "character",
                     default = csv_path)
+  p <- add_argument(parser = p,
+                    arg = "--monthly",
+                    help = "Count active users by month",
+                    flag = TRUE)
   p <- add_argument(parser = p,
                     arg = "--debug",
                     help = "Enable debug output",
@@ -70,6 +83,7 @@ if (!interactive()) {
   log_path <- argv$log_path
   min_date <- as.POSIXct(argv$min_date)
   csv_path <- argv$output
+  monthly <- argv$monthly
   debug <- argv$debug
 }
 
@@ -92,7 +106,7 @@ print_dims(log_data)
 
 # Extract month and year
 print_debug("Extracting month from timestamp")
-log_data$month <- format(log_data$timestamp, format = "%m-%Y")
+log_data$month <- format(log_data$timestamp, format = "%Y-%m")
 
 # Count session_start events
 session_counts <- count_metric(log_data, "session_start")
@@ -112,14 +126,20 @@ print_debug("Identifying active users")
 all_counts$active <- all_counts$sessions > 0 | all_counts$logins > 0
 
 # Count monthly active users
-print_debug("Counting monthly active users")
-mau_counts <- unique(all_counts[all_counts$active, c("user", "month", "active")])
-mau_counts <- as.data.frame(table(mau_counts$month))
-names(mau_counts) <- c("Month", "Active User Count")
+if (monthly) {
+  print_debug("Counting monthly active users")
+  counts <- unique(all_counts[all_counts$active, c("user", "month", "active")])
+  counts <- as.data.frame(table(counts$month))
+  names(counts) <- c("Month", "Active User Count")
+} else {
+  counts <- all_counts[all_counts$active, "user"]
+  counts <- paste0(length(unique(counts)), " unique RStudio Server Pro named users between ", format(min_date, "%Y-%m-%d"), " and ", format(max_date, "%Y-%m-%d"))
+}
+
 
 # Write CSV
 print_debug(paste0("Writing user counts data to ", csv_path))
 write.csv(all_counts, csv_path, row.names = FALSE)
 
 # Print final user counts
-print(mau_counts, row.names = FALSE)
+print(counts, row.names = FALSE)

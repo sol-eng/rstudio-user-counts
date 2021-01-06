@@ -51,24 +51,28 @@ RStudio Server Pro server.** Otherwise, you will need to create a copy of the
 log file with appropriate permissions.
 
 ```bash
-$ ./named-users-rsp.R -h
-usage: mau-rsp.R [--] [--help] [--debug] [--opts OPTS] [--log-path
-       LOG-PATH] [--min-date MIN-DATE] [--output OUTPUT]
+$ ./named-users-rsp.R -h                                              
+usage: named-users-rsp.R [--] [--help] [--monthly] [--debug] [--opts
+       OPTS] [--log-path LOG-PATH] [--min-date MIN-DATE] [--max-date
+       MAX-DATE] [--output OUTPUT]
 
-Monthly Active RStudio Server Pro User Counts
+Active RStudio Server Pro User Counts
 
 flags:
   -h, --help      show this help message and exit
+  --monthly       Count active users by month
   -d, --debug     Enable debug output
 
 optional arguments:
   -x, --opts      RDS file containing argument values
   -l, --log-path  Path to RStudio Session logs [default:
                   /var/lib/rstudio-server/audit/r-sessions/r-sessions.csv]
-  -m, --min-date  Minimum date to compute monthly counts [default:
-                  2019-12-17 17:00:00]
+  -m, --min-date  Minimum date to compute user counts [default:
+                  2020-01-06]
+  --max-date      Maximum date to compute user counts [default:
+                  2021-01-06]
   -o, --output    Path to write .csv file of user counts [default:
-                  ./rsp-user-counts-2020-12-17-10:27:32.csv]
+                  ./rsp-user-counts-2021-01-06-16:46:42.csv]
 ```
 
 #### RStudio Connect
