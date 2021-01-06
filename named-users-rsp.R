@@ -48,7 +48,7 @@ count_metric <- function(log_data, metric) {
 # Parse arguments if run as CLI
 if (!interactive()) {
   library(argparser, quietly = TRUE)
-  p <- arg_parser(description = "Active RStudio Server Pro User Counts")
+  p <- arg_parser(description = "Active RStudio Server Pro User Counts. This utility should be executed as root.")
   p <- add_argument(parser = p, 
                     arg = "--log-path", 
                     help = "Path to RStudio Session logs",
