@@ -51,12 +51,13 @@ RStudio Server Pro server.** Otherwise, you will need to create a copy of the
 log file with appropriate permissions.
 
 ```bash
-$ ./named-users-rsp.R -h                                              
+$ ./named-users-rsp.R -h
 usage: named-users-rsp.R [--] [--help] [--monthly] [--debug] [--opts
        OPTS] [--log-path LOG-PATH] [--min-date MIN-DATE] [--max-date
        MAX-DATE] [--output OUTPUT]
 
-Active RStudio Server Pro User Counts
+Active RStudio Server Pro User Counts. This utility should be executed
+as root.
 
 flags:
   -h, --help      show this help message and exit
@@ -72,7 +73,8 @@ optional arguments:
   --max-date      Maximum date to compute user counts [default:
                   2021-01-06]
   -o, --output    Path to write .csv file of user counts [default:
-                  ./rsp-user-counts-2021-01-06-16:46:42.csv]
+                  ./rsp-user-counts-2021-01-06-17:01:23.csv]
+
 ```
 
 #### RStudio Connect
