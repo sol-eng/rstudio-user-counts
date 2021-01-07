@@ -49,6 +49,9 @@ parameter. By default, this log file can only be read by the root user,
 therefore **it is recommended to run this script with root privileges on the
 RStudio Server Pro server.** Otherwise, you will need to create a copy of the
 log file with appropriate permissions.
+If there are multiple installations of RStudio Server Pro configured in a
+cluster, then this script will need to be run on each cluster and the results
+combined to accurately determine the number of named users across the cluster.
 
 ```bash
 $ ./named-users-rsp.R -h
@@ -85,6 +88,9 @@ be used, [RStudio Connect must be
 stopped](https://docs.rstudio.com/connect/admin/server-management/#stopping-starting)
 if you use the SQLite database provider. **It is recommended to run this script
 with root privileges on the RStudio Connect server.**
+If there are multiple installations of RStudio Connect configured in a cluster,
+nothing additional needs to be done. The `usermanager` CLI used will report
+usage across all servers in the cluster.
 
 ```bash
 $ ./named-users-rsc.R -h
