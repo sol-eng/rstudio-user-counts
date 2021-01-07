@@ -85,24 +85,28 @@ if you use the SQLite database provider. **It is recommended to run this script
 with root privileges on the RStudio Connect server.**
 
 ```bash
-$ ./named-users-rsc.R -h                                                      
-usage: mau-rsc.R [--] [--help] [--debug] [--opts OPTS] [--min-date
-       MIN-DATE] [--max-date MAX-DATE] [--output OUTPUT]
+$ ./named-users-rsc.R -h
+usage: named-users-rsc.R [--] [--help] [--monthly] [--debug] [--opts
+       OPTS] [--min-date MIN-DATE] [--max-date MAX-DATE] [--output
+       OUTPUT]
 
-Monthly Active RStudio Connect User Counts
+Active RStudio Connect User Counts. Note that if you are using the
+default SQLite database provider, RStudio Connect must be stopped to
+run this utility. This utility should be executed as root.
 
 flags:
   -h, --help      show this help message and exit
+  --monthly       Count active users by month
   -d, --debug     Enable debug output
 
 optional arguments:
   -x, --opts      RDS file containing argument values
-  -m, --min-date  Minimum date to compute monthly counts [default:
-                  2019-12-17 17:00:00]
-  --max-date      Maximum date to compute monthly counts [default:
-                  2020-12-17 17:00:00]
+  -m, --min-date  Minimum date to compute user counts [default:
+                  2020-01-06]
+  --max-date      Maximum date to compute user counts [default:
+                  2021-01-06]
   -o, --output    Path to write .csv file of user counts [default:
-                  ./rsc-user-counts-2020-12-17-10:28:08.csv]
+                  ./rsc-user-counts-2021-01-06-16:58:26.csv]
 ```
 
 ### Output
@@ -117,8 +121,8 @@ easily identify users who are using both RStudio Server Pro and RStudio Connect.
 
 ```bash
 $ ./counts-combine.R -h
-usage: mau-combine.R [--] [--help] [--debug] [--opts OPTS] [--rsp-path
-       RSP-PATH] [--rsc-path RSC-PATH] [--output OUTPUT]
+usage: counts-combine.R [--] [--help] [--debug] [--opts OPTS]
+       [--rsp-path RSP-PATH] [--rsc-path RSC-PATH] [--output OUTPUT]
 
 Combine Monthly Active User Counts
 
@@ -131,8 +135,8 @@ optional arguments:
   -r, --rsp-path  Path to output from mau-rsp
   --rsc-path      Path to output from mau-rsc
   -o, --output    Path to write combined .csv file of user counts
-                  [default: ./combined-mau-counts-2020-12-17
-                  11:09:23.csv]
+                  [default: ./combined-mau-counts-2021-01-06
+                  16:59:33.csv]
 ```
 
 The output of the script is a CSV file containing combined data from the two
@@ -145,7 +149,7 @@ them a numeric ID.
 
 ```bash
 $ ./counts-anonymize.R -h
-usage: mau-anonymize.R [--] [--help] [--debug] [--opts OPTS]
+usage: counts-anonymize.R [--] [--help] [--debug] [--opts OPTS]
        [--data-path DATA-PATH] [--output OUTPUT]
 
 Anonymize MAU user counts data
@@ -158,6 +162,6 @@ optional arguments:
   -x, --opts       RDS file containing argument values
   -d, --data-path  Path to MAU counts output file
   -o, --output     Path to write .csv file of anonymized user counts
-                   [default: ./anonymized-mau-counts-2020-12-17
-                   11:10:44.csv]
+                   [default: ./anonymized-mau-counts-2021-01-06
+                   16:59:18.csv]
 ```

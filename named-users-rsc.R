@@ -7,6 +7,9 @@ csv_path <- gsub(" ", "-", paste0("./rsc-user-counts-", Sys.time(), ".csv"))
 min_date <- as.POSIXct(Sys.Date() - 365)
 max_date <- as.POSIXct(Sys.Date() + 1)
 
+# Set monthly value
+monthly <- FALSE
+
 # Set debug value
 debug <- FALSE
 
@@ -18,22 +21,26 @@ print_debug <- function(msg) {
 
 if (!interactive()) {
    library(argparser, quietly = TRUE)
-  p <- arg_parser("Monthly Active RStudio Connect User Counts")
+  p <- arg_parser("Active RStudio Connect User Counts. Note that if you are using the default SQLite database provider, RStudio Connect must be stopped to run this utility. This utility should be executed as root.")
   p <- add_argument(parser = p,
                     arg = "--min-date",
-                    help = "Minimum date to compute monthly counts",
+                    help = "Minimum date to compute user counts",
                     type = "character",
-                    default = as.character(min_date))
+                    default = format(min_date, "%Y-%m-%d"))
   p <- add_argument(parser = p,
                     arg = "--max-date",
-                    help = "Maximum date to compute monthly counts",
+                    help = "Maximum date to compute user counts",
                     type = "character",
-                    default = as.character(max_date))
+                    default = format(max_date, "%Y-%m-%d"))
   p <- add_argument(parser = p,
                     arg = "--output",
                     help = paste0("Path to write .csv file of user counts"),
                     type = "character",
                     default = csv_path)
+  p <- add_argument(parser = p,
+                    arg = "--monthly",
+                    help = "Count active users by month",
+                    flag = TRUE)
   p <- add_argument(parser = p,
                     arg = "--debug",
                     help = "Enable debug output",
@@ -44,6 +51,7 @@ if (!interactive()) {
   min_date <- as.POSIXct(argv$min_date)
   max_date <- as.POSIXct(argv$max_date)
   csv_path <- argv$output
+  monthly <- argv$monthly
   debug <- argv$debug
 }
 
@@ -69,7 +77,7 @@ audit_log <- audit_log[audit_log$Action == "user_login", c("UserId", "UserDescri
 # Create month column
 print_debug("Extracting month from timestamp")
 audit_log$Time <- as.POSIXct(audit_log$Time)
-audit_log$Month <- format(audit_log$Time, format = "%m-%Y")
+audit_log$Month <- format(audit_log$Time, format = "%Y-%m")
 
 # Count user and month
 print_debug("Counting sessions per user per month")
@@ -84,13 +92,16 @@ monthly_users <- unique(audit_log[,c("UserDescription", "Month")])
 
 # Calculate observations per month, which is equivalent to the number of active 
 # users per month
-print_debug("Calculating user counts by month")
-user_counts <- as.data.frame(table(monthly_users$Month))
-names(user_counts) <- c("Month", "Active User Count")
-
+if (monthly) {
+  print_debug("Calculating user counts by month")
+  counts <- as.data.frame(table(monthly_users$Month))
+  names(counts) <- c("Month", "Active User Count")
+} else {
+  counts <- paste0(length(unique(monthly_users$UserDescription)), " unique RStudio Connect named users between ", format(min_date, "%Y-%m-%d"), " and ", format(max_date, "%Y-%m-%d"))
+}
 # Write CSV
 print_debug(paste0("Writing user counts data to ", csv_path))
 write.csv(user_session_counts, csv_path, row.names = FALSE)
 
 # Print final user counts
-print(user_counts, row.names = FALSE)
+print(counts, row.names = FALSE)
