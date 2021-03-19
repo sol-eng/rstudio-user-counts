@@ -1,0 +1,4 @@
+^renv$
+^renv\.lock$
+^rstudio-user-counts\.Rproj$
+^\.Rproj\.user$

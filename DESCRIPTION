@@ -1,0 +1,19 @@
+Package: usercounts
+Title: Generate Active User Counts for RStudio Server Pro and RStudio Connect
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "James",
+           family = "Blair",
+           role = c("aut", "cre"),
+           email = "james@rstudio.com")
+Description: These scripts generate active user counts for RStudio Server Pro and RStudio Connect. 
+  These counts can be used to verify annual usage for licensing purposes, 
+  or to create more granular reports like monthly active users.
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports:
+    argparser
