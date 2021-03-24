@@ -45,9 +45,9 @@ if (!interactive()) {
                     arg = "--debug",
                     help = "Enable debug output",
                     flag = TRUE)
-  
+
   argv <- parse_args(p)
-  
+
   min_date <- as.POSIXct(argv$min_date)
   max_date <- as.POSIXct(argv$max_date)
   csv_path <- argv$output
@@ -57,14 +57,15 @@ if (!interactive()) {
 
 # Generate audit logs using the usermanager CLI and read them into R
 print_debug("Generating RStudio Connect audit log. Please note that RStudio Connect needs to be stopped in order to generate the audit log if you use the SQLite database provider.")
-audit_log <- read.csv(text = system2("/opt/rstudio-connect/bin/usermanager", 
-                                     c("audit", 
-                                       "--csvlog", 
+audit_log <- read.csv(text = system2("/opt/rstudio-connect/bin/usermanager",
+                                     c("audit",
+                                       "--csvlog",
                                        paste0("--since ", as.Date(min_date)),
                                        paste0("--until ", as.Date(max_date))
-                                     ), 
-                                     stdout = TRUE, 
-                                     stderr = FALSE),
+                                     ),
+                                     stdout = NULL,
+                                     stderr = FALSE,
+                                     ),
                       stringsAsFactors = FALSE,
                       strip.white = TRUE,
                       header = FALSE)
@@ -90,7 +91,7 @@ user_session_counts$product <- "RStudio Connect"
 print_debug("Summarizing by unique username and month combinations")
 monthly_users <- unique(audit_log[,c("UserDescription", "Month")])
 
-# Calculate observations per month, which is equivalent to the number of active 
+# Calculate observations per month, which is equivalent to the number of active
 # users per month
 if (monthly) {
   print_debug("Calculating user counts by month")
