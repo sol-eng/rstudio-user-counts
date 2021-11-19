@@ -50,7 +50,7 @@ therefore **it is recommended to run this script with root privileges on the
 RStudio Server Pro server.** Otherwise, you will need to create a copy of the
 log file with appropriate permissions.
 If there are multiple installations of RStudio Server Pro configured in a
-cluster, then this script will need to be run on each cluster and the results
+cluster, then this script will need to be run on each node and the results
 combined to accurately determine the number of named users across the cluster.
 
 ```bash
