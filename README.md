@@ -10,13 +10,13 @@ Each script assumes that R and Rscript are installed and available at
 `/usr/local/bin/`. If that's not the case, you need to manually specify the path
 to `Rscript` before running the script:
 ```
-/path/to/Rscript ./mau-rsp.R
+/path/to/Rscript ./named-users-rsp.R
 ```
 
 If Rscript is available in `/usr/local/bin/`, then you can simply execute the
 files:
 ```
-./mau-rsp.R
+./named-users-rsp.R
 ```
 
 #### R Packages
