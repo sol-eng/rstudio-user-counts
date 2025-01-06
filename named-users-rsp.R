@@ -133,7 +133,7 @@ if (monthly) {
   names(counts) <- c("Month", "Active User Count")
 } else {
   counts <- all_counts[all_counts$active, "user"]
-  counts <- paste0(length(unique(counts)), " unique RStudio Server Pro named users between ", format(min_date, "%Y-%m-%d"), " and ", format(max_date, "%Y-%m-%d"))
+  counts <- paste0(length(unique(counts)), " unique Posit Workbench named users between ", format(min_date, "%Y-%m-%d"), " and ", format(max_date, "%Y-%m-%d"))
 }
 
 
